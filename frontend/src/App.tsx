@@ -1,11 +1,14 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import ChatBox from "./pages/Chat";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import Home from "./pages/Home";
-import Inbox from "./pages/Inbox";
 import ErrorPage from "./error-page";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import Login from "./pages/Login";
 import ChatsHome from "./pages/ChatsHome";
+import ProtectedRoute from "./components/ProtectedRoute";
+import { AuthProvider } from "./hooks/useAuth";
+import Inbox from "./pages/Inbox";
+import Chat from "./pages/Chat";
 
 const router = createBrowserRouter([
   {
@@ -20,19 +23,30 @@ const router = createBrowserRouter([
   },
   {
     path: "/chat",
-    element: <ChatBox />,
+    element: (
+      <ProtectedRoute>
+        <Inbox />
+      </ProtectedRoute>
+    ),
     children: [
       {
-        element: <ChatsHome />,
         errorElement: <ErrorPage />,
         children: [
           {
             index: true,
-            element: <ErrorPage />,
+            element: (
+              <ProtectedRoute>
+                <ChatsHome />
+              </ProtectedRoute>
+            ),
           },
           {
             path: "/chat/:id",
-            element: <Inbox />,
+            element: (
+              <ProtectedRoute>
+                <Chat />
+              </ProtectedRoute>
+            ),
           },
         ],
       },
@@ -45,7 +59,10 @@ const queryClient = new QueryClient();
 const Router = () => {
   return (
     <QueryClientProvider client={queryClient}>
-      <RouterProvider router={router} />
+      <AuthProvider>
+        <RouterProvider router={router} />
+      </AuthProvider>
+      <ReactQueryDevtools initialIsOpen={false} />
     </QueryClientProvider>
   );
 };

@@ -1,6 +1,6 @@
 import { loginAction } from "@/actions/auth";
 import { Button } from "@/components/ui/button";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Loader } from "lucide-react";
 import { useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
@@ -11,12 +11,14 @@ const Login = () => {
     password: "",
   });
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
 
   const errorElementRef = useRef<HTMLSpanElement>(null);
 
   const mutation = useMutation({
     mutationFn: loginAction,
     onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["authStatus"] });
       navigate("/chat");
     },
     onError: (error) => {

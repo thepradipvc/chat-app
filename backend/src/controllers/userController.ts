@@ -3,7 +3,11 @@ import { eq } from "drizzle-orm";
 import { Request, Response } from "express";
 import asyncHandler from "express-async-handler";
 import { db } from "../db";
-import { usersTable } from "../db/schema";
+import {
+  conversationsTable,
+  usersConversationsTable,
+  usersTable,
+} from "../db/schema";
 import { cookieOptions, generateToken } from "../lib/utils";
 
 export const registerUser = asyncHandler(
@@ -44,6 +48,23 @@ export const registerUser = asyncHandler(
       .update(usersTable)
       .set({ image: imageUrl })
       .where(eq(usersTable.id, user.id));
+
+    // For now: connect new user with all other users in private chat
+    const users = await db.select({ id: usersTable.id }).from(usersTable);
+    const otherUsersIds = users.map((u) => u.id).filter((id) => id !== user.id);
+    await db.transaction(async (tx) => {
+      const conversations = await tx
+        .insert(conversationsTable)
+        .values(otherUsersIds.map(() => ({ conversationType: "private" })))
+        .returning({ id: conversationsTable.id });
+
+      const userConversations = otherUsersIds.flatMap((otherUserId, i) => [
+        { userId: user.id, conversationId: conversations[i].id },
+        { userId: otherUserId, conversationId: conversations[i].id },
+      ]);
+
+      await tx.insert(usersConversationsTable).values(userConversations);
+    });
 
     const token = generateToken(user.id);
 

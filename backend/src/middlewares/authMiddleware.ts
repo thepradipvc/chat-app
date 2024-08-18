@@ -11,6 +11,8 @@ declare global {
       user?: {
         id: number;
         username: string;
+        image: string;
+        lastActive: Date;
       };
     }
   }
@@ -32,10 +34,17 @@ const authMiddleware = asyncHandler(
         ) as { id: number };
 
         // Get user from the token
-        const [user] = await db
-          .select({ id: usersTable.id, username: usersTable.username })
-          .from(usersTable)
-          .where(eq(usersTable.id, decoded.id));
+        const user = await db.query.usersTable.findFirst({
+          where: eq(usersTable.id, decoded.id),
+          columns: {
+            password: false,
+          },
+        });
+
+        if (!user) {
+          res.status(401);
+          throw new Error("Not authorised");
+        }
 
         req.user = user;
 

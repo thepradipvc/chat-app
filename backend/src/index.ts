@@ -6,6 +6,7 @@ import path from "path";
 import { Server } from "socket.io";
 
 import userRouter from "./routes/userRouter";
+import chatRouter from "./routes/chatRouter";
 import errorHandler from "./middlewares/errorMiddleware";
 
 const app = express();
@@ -20,6 +21,7 @@ app.use(express.json());
 app.use(cookieParser());
 
 app.use("/api/users", userRouter);
+app.use("/api/chats", chatRouter);
 
 // Serve static files from the frontend in production
 if (process.env.NODE_ENV === "production") {

@@ -1,3 +1,4 @@
+import { User } from "@/lib/types";
 import axios from "axios";
 
 export const loginAction = async (loginInfo: {
@@ -12,6 +13,11 @@ export const registerAction = async (registerInfo: {
   password: string;
 }) => {
   return await axios.post("/api/users/register", registerInfo);
+};
+
+export const getMe = async () => {
+  const res = await axios.get<User>("/api/users/me");
+  return { isLoggedIn: res.status === 200, user: res.data };
 };
 
 export const usernameAvailability = async (username: string) => {

@@ -6,6 +6,10 @@ const errorHandler = (
   res: Response,
   next: NextFunction
 ) => {
+  if (res.headersSent) {
+    return next(err);
+  }
+
   const statusCode = res.statusCode ? res.statusCode : 500;
 
   res.status(statusCode);
