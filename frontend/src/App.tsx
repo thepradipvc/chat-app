@@ -3,6 +3,9 @@ import ChatBox from "./pages/Chat";
 import Home from "./pages/Home";
 import Inbox from "./pages/Inbox";
 import ErrorPage from "./error-page";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import Login from "./pages/Login";
+import ChatsHome from "./pages/ChatsHome";
 
 const router = createBrowserRouter([
   {
@@ -11,10 +14,16 @@ const router = createBrowserRouter([
     errorElement: <ErrorPage />,
   },
   {
+    path: "/login",
+    element: <Login />,
+    errorElement: <ErrorPage />,
+  },
+  {
     path: "/chat",
     element: <ChatBox />,
     children: [
       {
+        element: <ChatsHome />,
         errorElement: <ErrorPage />,
         children: [
           {
@@ -31,8 +40,14 @@ const router = createBrowserRouter([
   },
 ]);
 
+const queryClient = new QueryClient();
+
 const Router = () => {
-  return <RouterProvider router={router} />;
+  return (
+    <QueryClientProvider client={queryClient}>
+      <RouterProvider router={router} />
+    </QueryClientProvider>
+  );
 };
 
 export default Router;

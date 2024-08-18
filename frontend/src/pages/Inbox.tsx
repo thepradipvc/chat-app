@@ -86,12 +86,8 @@ const ChatBox = () => {
   return (
     <div className="flex flex-col overflow-y-auto">
       <ChatTopBar user={chat.user} timestamp={chat.timestamp} />
-      <div className="custom-scrollbar flex-1 space-y-8 overflow-y-auto border-y border-neutral-100 px-8 py-8">
-        <ChatMessages messages={chat.messages} />
-      </div>
-      <div className="px-12 py-6">
-        <ChatInput isDisabled />
-      </div>
+      <ChatMessages messages={chat.messages} />
+      <ChatInput isDisabled />
     </div>
   );
 };

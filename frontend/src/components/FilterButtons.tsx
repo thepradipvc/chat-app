@@ -2,11 +2,11 @@ import { Button } from "./ui/button";
 
 const FilterButtons = () => {
   return (
-    <div className="flex gap-2 border-y border-neutral-100 p-4">
+    <div className="flex flex-wrap gap-2 border-y border-neutral-100 p-4">
       <Button
         size="sm"
         variant="outline"
-        className="bg-primary h-max rounded-2xl border-2 px-2 py-[2px] text-sm text-white"
+        className="h-max rounded-2xl border-2 bg-primary px-2 py-[2px] text-sm text-white"
       >
         All
       </Button>

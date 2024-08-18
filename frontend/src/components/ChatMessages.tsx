@@ -2,7 +2,7 @@ import { cn } from "@/lib/utils";
 
 const ChatMessages = ({ messages }: { messages: string[] }) => {
   return (
-    <>
+    <div className="custom-scrollbar flex-1 space-y-8 overflow-y-auto border-y border-neutral-100 px-8 py-8">
       {messages.map((message, index) => (
         <Message
           key={index}
@@ -10,7 +10,7 @@ const ChatMessages = ({ messages }: { messages: string[] }) => {
           side={index % 2 == 0 ? "left" : "right"}
         />
       ))}
-    </>
+    </div>
   );
 };
 
@@ -25,9 +25,9 @@ const Message = ({ message, side }: MessageProps) => {
   return (
     <p
       className={cn(
-        "text-muted-foreground w-max max-w-2xl rounded-lg bg-neutral-50 p-4 font-medium",
+        "w-4/5 max-w-max rounded-lg bg-neutral-50 p-4 font-medium text-muted-foreground",
         {
-          "bg-primary ml-auto text-white": side === "right",
+          "ml-auto bg-primary text-white": side === "right",
         },
       )}
     >

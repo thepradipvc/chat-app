@@ -1,29 +1,25 @@
-import express from "express";
-import path from "path";
-import http from "http";
-import { Server } from "socket.io";
+import cookieParser from "cookie-parser";
 import dotEnv from "dotenv";
+import express from "express";
+import http from "http";
+import path from "path";
+import { Server } from "socket.io";
+
+import userRouter from "./routes/userRouter";
+import errorHandler from "./middlewares/errorMiddleware";
 
 const app = express();
 const server = http.createServer(app);
-const io = new Server(server);
+export const io = new Server(server);
 
 dotEnv.config({
   path: path.join(__dirname, "../../.env"),
 });
 
-const port = process.env.PORT || 3000;
+app.use(express.json());
+app.use(cookieParser());
 
-app.get("/api/some-data", (req, res) => {
-  res.json({ message: process.env.DATABASE_URL + " hello" || "NOT AVAILABLE" });
-});
-
-io.on("connection", (socket) => {
-  console.log("a user connected");
-  socket.on("disconnect", () => {
-    console.log("user disconnected");
-  });
-});
+app.use("/api/users", userRouter);
 
 // Serve static files from the frontend in production
 if (process.env.NODE_ENV === "production") {
@@ -33,8 +29,13 @@ if (process.env.NODE_ENV === "production") {
   app.get("*", (req, res) => {
     res.sendFile(path.join(frontendPath, "index.html"));
   });
+} else {
+  app.get("/", (req, res) => res.send("Please set to production mode"));
 }
 
+app.use(errorHandler);
+
+const port = process.env.PORT || 3000;
 server.listen(port, () => {
   console.log(`Server is running on port ${port}`);
 });

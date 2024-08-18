@@ -57,14 +57,26 @@
     --chart-4: 280 65% 60%;
     --chart-5: 340 75% 55%;
   }
-}
 
-@layer base {
   * {
     @apply border-border;
   }
   body {
     @apply bg-background text-foreground;
+  }
+
+  @font-face {
+    font-family: baloobhai;
+    src: url(./assets/baloo-bhai-font/BalooBhai2-Regular.ttf);
+    font-weight: 400;
+    font-style: normal;
+  }
+
+  @font-face {
+    font-family: baloobhai;
+    src: url(./assets/baloo-bhai-font/BalooBhai2-Bold.ttf);
+    font-weight: 700;
+    font-style: normal;
   }
 }
 
